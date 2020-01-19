@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react'
+import Recipe from './components/Recipe'
 
 const App = () => {
   const APP_ID = '368135c0'
-  const APP_KEY = 'dbcf9992f815976115e9ae112151268e'
+  const APP_KEY = 'ae93b13fb667e7ba777ea129f72e7542'
 
-  useEffect(() => {}, [])
+  const [recipes, setRecipes] = useState([])
+
+  useEffect(() => {
+    getRecipes()
+  }, [])
 
   const getRecipes = async () => {
     const response = await fetch(
       'https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}'
     )
-    const data = response.json()
-    console.log(data)
+    const data = await response.json()
+    setRecipes(data.hits)
+    console.log(data.hits)
   }
 
   return (
@@ -22,6 +28,13 @@ const App = () => {
           Search
         </button>
       </form>
+      {recipes.map(recipe => (
+        <Recipe
+          Title={recipe.recipe.label}
+          Calories={recipe.recipe.calories}
+          image={recipe.recipe.image}
+        />
+      ))}
     </div>
   )
 }
